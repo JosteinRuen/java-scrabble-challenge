@@ -39,14 +39,19 @@ public class Scrabble {
         this.values.put("X",8);
         this.values.put("Q",10);
         this.values.put("Z",10);
+        this.values.put("{",0);
+        this.values.put("}",0);
+        this.values.put("[",0);
+        this.values.put("]",0);
     }
 
     public int score() {
         ArrayList<String> lettersInWord = new ArrayList<>();
+
+
+
         for (int i = 0; i < word.length(); i++){
             String character = String.valueOf(word.toUpperCase().charAt(i));
-
-            System.out.println(character);
 
             if(!values.containsKey(character)){
                 //do nothing
@@ -55,18 +60,43 @@ public class Scrabble {
             }
         }
 
+
         if(lettersInWord.isEmpty()){
             return 0;
         }else{
 
-            for(String letter: lettersInWord) {
+
+
+            if(lettersInWord.contains("{") || lettersInWord.contains("[")){
+                for (int i = 0; i < lettersInWord.size(); i++){
+                    ArrayList<String> subList = new ArrayList<>();
+                    if (lettersInWord.get(i).equals("{")){
+                        int bracketClose = lettersInWord.indexOf("}");
+                        for (int j = i+1; j < bracketClose; j++){
+                            score += values.get(lettersInWord.get(j));
+                        }
+                    }if(lettersInWord.get(i).equals("[")){
+                        int bracketClose = lettersInWord.indexOf("]");
+                        for (int j = i+1; j < bracketClose; j++){
+                            score += values.get(lettersInWord.get(j)) * 2;
+
+                        }
+                    }
+                }
+            }
+            for (String letter : lettersInWord) {
                 score += values.get(letter);
             }
+
 
         }
         return score;
     }
 
+    public static void main(String[] args){
+        Scrabble scrabble = new Scrabble("{dog}");
+        System.out.println(scrabble.score());
+    }
 
 
 }
